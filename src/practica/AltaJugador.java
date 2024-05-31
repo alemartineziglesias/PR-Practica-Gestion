@@ -29,8 +29,10 @@ public class AltaJugador implements ActionListener, WindowListener
 	Dialog mensaje = new Dialog(ventana, "mensaje", true);
 	Label lblMensaje = new Label("Jugador creado correctamente");
 	Datos datos = new Datos();
+	String portapapeles;
+	private int tipoUsuario;
 	
-	AltaJugador()
+	AltaJugador(int tipoUsuario)
 	{
 		ventana.setLayout(new FlowLayout());
 		datos.conectar();
@@ -53,6 +55,7 @@ public class AltaJugador implements ActionListener, WindowListener
 		ventana.setResizable(false);
 		ventana.setLocationRelativeTo(null);
 		ventana.setVisible(true);
+		this.tipoUsuario = tipoUsuario;
 	}
 
 	@Override
@@ -74,6 +77,7 @@ public class AltaJugador implements ActionListener, WindowListener
 		else
 		{
 			ventana.setVisible(false);
+			datos.desconectar();
 		}
 	}
 
@@ -117,29 +121,64 @@ public class AltaJugador implements ActionListener, WindowListener
 	{
 		if(e.getSource().equals(aceptar))
 		{
-			boolean altaCorrecta = datos.altaJugador(nombre.getText(), apellidos.getText(), Integer.parseInt(edad.getText()), posicion.getText(), nacionalidad.getText());
-			mensaje.setLayout(new FlowLayout());
-			mensaje.addWindowListener(this);
-			mensaje.setSize(250, 70);
-			mensaje.setResizable(false);
-			mensaje.setLocationRelativeTo(null);
-			if(altaCorrecta == false)
+			String portapapeles = nombre.getText();
+			if(nombre.getText().equals("") | apellidos.getText().equals("") | edad.getText().equals("") | posicion.getText().equals("") | nacionalidad.getText().equals(""))
 			{
-				lblMensaje.setText("Se ha producido un error");
+				mensaje.setLayout(new FlowLayout());
+				mensaje.addWindowListener(this);
+				mensaje.setSize(250, 70);
+				mensaje.setResizable(false);
+				mensaje.setLocationRelativeTo(null);
+				lblMensaje.setText("Por favor, rellene todos los campos");
+				mensaje.add(lblMensaje);
+				mensaje.setVisible(true);
+				nombre.setText(portapapeles);
 			}
 			else
 			{
-				lblMensaje.setText("Jugador creado correctamente");
+				try
+				{
+					boolean altaCorrecta = datos.altaJugador(nombre.getText(), apellidos.getText(), Integer.parseInt(edad.getText()), posicion.getText(), nacionalidad.getText());
+					mensaje.setLayout(new FlowLayout());
+					mensaje.addWindowListener(this);
+					mensaje.setSize(250, 70);
+					mensaje.setResizable(false);
+					mensaje.setLocationRelativeTo(null);
+					if(altaCorrecta == false)
+					{
+						lblMensaje.setText("Se ha producido un error");
+					}
+					else
+					{
+						lblMensaje.setText("Jugador creado correctamente");
+						Utilidades.guardarLogAltaJugador(nombre.getText(), apellidos.getText(), edad.getText(), posicion.getText(), nacionalidad.getText(), tipoUsuario);
+					}
+					mensaje.add(lblMensaje);
+					mensaje.setVisible(true);
+				}
+				catch(NumberFormatException nfe)
+				{
+					mensaje.setLayout(new FlowLayout());
+					mensaje.addWindowListener(this);
+					mensaje.setSize(250, 70);
+					mensaje.setResizable(false);
+					mensaje.setLocationRelativeTo(null);
+					lblMensaje.setText("Solo se admiten números en la edad");
+					mensaje.add(lblMensaje);
+					mensaje.setVisible(true);
+					nombre.setText(portapapeles);
+					edad.setText("");
+					edad.requestFocus();
+				}
+				catch(NullPointerException npe)
+				{
+					
+				}
 			}
-			mensaje.add(lblMensaje);
-			mensaje.setVisible(true);
-			datos.desconectar();
-			
 		}
 		else if(e.getSource().equals(cancelar))
 		{
 			ventana.setVisible(false);
 		}
-		
 	}
 }

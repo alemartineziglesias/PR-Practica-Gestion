@@ -49,12 +49,12 @@ public class Login implements WindowListener, ActionListener
 
 	public void windowActivated(WindowEvent windowEvent)
 	{
-		
+
 	}
-	
+
 	public void windowClosed(WindowEvent windowEvent) 
 	{
-		
+
 	}
 
 	public void windowClosing(WindowEvent windowEvent)
@@ -71,22 +71,22 @@ public class Login implements WindowListener, ActionListener
 
 	public void windowDeactivated(WindowEvent windowEvent) 
 	{
-		
+
 	}
 
 	public void windowDeiconified(WindowEvent windowEvent) 
 	{
-		
+
 	}
 
 	public void windowIconified(WindowEvent windowEvent) 
 	{
-		
+
 	}
 
 	public void windowOpened(WindowEvent windowEvent) 
 	{
-		
+
 	}
 
 	public void actionPerformed(ActionEvent actionEvent)
@@ -101,7 +101,7 @@ public class Login implements WindowListener, ActionListener
 		{
 			Datos datos = new Datos();
 
-			if(datos.conectar()==true)
+			if(datos.conectar() == true)
 			{
 				String usuario = txtUsuario.getText();
 				String clave = txtClave.getText();
@@ -109,9 +109,8 @@ public class Login implements WindowListener, ActionListener
 				if(datos.comprobarCredenciales(usuario, clave)== true)
 				{
 					int tipoUsuario = datos.dameTipo(usuario);
-					
+					Utilidades.guardarLog(tipoUsuario, "Ha entrado");
 					new MenuPrincipal(tipoUsuario);
-					
 					ventana.setVisible(false);
 				}
 				else
@@ -132,4 +131,3 @@ public class Login implements WindowListener, ActionListener
 		}
 	}
 }
-

@@ -21,8 +21,9 @@ public class AltaCiudad implements ActionListener, WindowListener
 	Dialog mensaje = new Dialog(ventana, "mensaje", true);
 	Label lblMensaje = new Label("Ciudad creada correctamente");
 	Datos datos = new Datos();
-	
-	AltaCiudad()
+	private int tipoUsuario;
+
+	AltaCiudad(int tipoUsuario)
 	{
 		ventana.setLayout(new FlowLayout());
 		datos.conectar();
@@ -37,13 +38,14 @@ public class AltaCiudad implements ActionListener, WindowListener
 		ventana.setResizable(false);
 		ventana.setLocationRelativeTo(null);
 		ventana.setVisible(true);
+		this.tipoUsuario = tipoUsuario;
 	}
 
 	@Override
 	public void windowOpened(WindowEvent e)
 	{
 		// TODO Apéndice de método generado automáticamente
-		
+
 	}
 
 	@Override
@@ -57,6 +59,7 @@ public class AltaCiudad implements ActionListener, WindowListener
 		}
 		else
 		{
+			datos.desconectar();
 			ventana.setVisible(false);
 		}
 	}
@@ -65,35 +68,35 @@ public class AltaCiudad implements ActionListener, WindowListener
 	public void windowClosed(WindowEvent e)
 	{
 		// TODO Apéndice de método generado automáticamente
-		
+
 	}
 
 	@Override
 	public void windowIconified(WindowEvent e)
 	{
 		// TODO Apéndice de método generado automáticamente
-		
+
 	}
 
 	@Override
 	public void windowDeiconified(WindowEvent e)
 	{
 		// TODO Apéndice de método generado automáticamente
-		
+
 	}
 
 	@Override
 	public void windowActivated(WindowEvent e)
 	{
 		// TODO Apéndice de método generado automáticamente
-		
+
 	}
 
 	@Override
 	public void windowDeactivated(WindowEvent e)
 	{
 		// TODO Apéndice de método generado automáticamente
-		
+
 	}
 
 	@Override
@@ -101,29 +104,41 @@ public class AltaCiudad implements ActionListener, WindowListener
 	{
 		if(e.getSource().equals(aceptar))
 		{
-			boolean altaCorrecta = datos.altaCiudad(nombre.getText());
-			mensaje.setLayout(new FlowLayout());
-			mensaje.addWindowListener(this);
-			mensaje.setSize(250, 70);
-			mensaje.setResizable(false);
-			mensaje.setLocationRelativeTo(null);
-			if(altaCorrecta == false)
+			if(nombre.getText().equals(""))
 			{
-				lblMensaje.setText("Se ha producido un error");
+				mensaje.setLayout(new FlowLayout());
+				mensaje.addWindowListener(this);
+				mensaje.setSize(250, 70);
+				mensaje.setResizable(false);
+				mensaje.setLocationRelativeTo(null);
+				lblMensaje.setText("Escriba el nombre de una ciudad");
+				mensaje.add(lblMensaje);
+				mensaje.setVisible(true);
 			}
 			else
 			{
-				lblMensaje.setText("Ciudad creada correctamente");
+				boolean altaCorrecta = datos.altaCiudad(nombre.getText());
+				mensaje.setLayout(new FlowLayout());
+				mensaje.addWindowListener(this);
+				mensaje.setSize(250, 70);
+				mensaje.setResizable(false);
+				mensaje.setLocationRelativeTo(null);
+				if(altaCorrecta == false)
+				{
+					lblMensaje.setText("Se ha producido un error");
+				}
+				else
+				{
+					lblMensaje.setText("Ciudad creada correctamente");
+					Utilidades.guardarLogAltaCiudad(nombre.getText(), tipoUsuario);
+				}
+				mensaje.add(lblMensaje);
+				mensaje.setVisible(true);
 			}
-			mensaje.add(lblMensaje);
-			mensaje.setVisible(true);
-			datos.desconectar();
-			
 		}
 		else if(e.getSource().equals(cancelar))
 		{
 			ventana.setVisible(false);
 		}
-		
 	}
 }
